@@ -25,4 +25,12 @@ import winsound
 rURL = 'https://www.google.com'
 
 #Capture response data coming from URL
+print('Getting data from URL...')
 rdata = requests.get(rURL)
+
+#Checking if response is okay or not
+rdata
+
+#Showing entire content that has been captured from the request
+rdata.content
+
