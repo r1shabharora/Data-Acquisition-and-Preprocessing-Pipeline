@@ -16,13 +16,12 @@ import requests
 from bs4 import BeautifulSoup
 import time;import json
 
-
 #Extra feature imports
 from random import randint
 import winsound
 
 #The URL from where data needs to be pulled
-rURL = 'https://www.google.com'
+rURL = 'https://finance.yahoo.com/quote/MSFT?p=MSFT&.tsrc=fin-srch'
 
 #Capture response data coming from URL
 print('Getting data from URL...')
@@ -33,4 +32,7 @@ rdata
 
 #Showing entire content that has been captured from the request
 rdata.content
+
+
+
 
