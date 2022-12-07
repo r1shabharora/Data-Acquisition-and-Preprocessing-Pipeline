@@ -27,11 +27,18 @@ rURL = 'https://finance.yahoo.com/quote/MSFT?p=MSFT&.tsrc=fin-srch'
 print('Getting data from URL...')
 rdata = requests.get(rURL)
 
+print("response.ok : {} , response.status_code : {}".format(rdata.ok , rdata.status_code))
+
 #Checking if response is okay or not
-rdata
+if rdata == 200:
+    print('Website respone ok')
+else:
+    print('Website respone NOT ok')
 
 #Showing entire content that has been captured from the request
 rdata.content
+
+
 
 
 
