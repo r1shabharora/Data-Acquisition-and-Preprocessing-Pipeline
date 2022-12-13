@@ -25,6 +25,7 @@ r_df = pdx.DataFrame()
 print(r_df)
 
 #Capture response data coming from URL
+#Default count of companies is 100 but this can be changed by just replacing the number in the end of the URL
 print('Getting data from URL...')
 r_url='https://finance.yahoo.com/most-active?offset=0&count=100'
 
@@ -34,13 +35,17 @@ r_headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) Apple
 #Capturing response in variable
 r_response=requests.get(r_url,headers=r_headers)
 
+#Printing the response status
 print("response.ok : {} , response.status_code : {}".format(r_response.ok , r_response.status_code))
 
-#Checking if response is okay or not
+
+#Checking if response is okay or not. In case the response is not 'OK' then program will auto-quit.
 if r_response.status_code == 200:
     print('Website respone ok')
 else:
     print('Website respone NOT ok')
+    print('Quitting the program')
+    exit()
 
 #Printing response
 #Showing entire content that has been captured from the request
@@ -53,6 +58,7 @@ soup=BeautifulSoup(r_response.content,'lxml')
 #Starting a loop so that each row of table data can be iterated. Each iteration will capture data for the new company
 for item in soup.select('.simpTblRow'):
     
+    #Data will be captured in dictionary
     my_dict = {"SYMBOL" : item.select('[aria-label=Symbol]')[0].get_text(),
               "NAME":item.select('[aria-label=Name]')[0].get_text(),
               "PRICE":item.select('[aria-label*=Price]')[0].get_text(),
@@ -62,6 +68,7 @@ for item in soup.select('.simpTblRow'):
               "AVERAGE VOLUME":item.select('[aria-label*="Avg Vol (3 month)"]')[0].get_text(),
               "PE_RATIO":item.select('[aria-label*="PE Ratio (TTM)"]')[0].get_text()}
     
+    #Data that was captured in dictionary is now being appended to the dataframe
     r_df = r_df.append(my_dict,ignore_index=True)
 
 
@@ -69,6 +76,7 @@ for item in soup.select('.simpTblRow'):
 print(r_df)
 
 
+#Database loading part
 
 
 
