@@ -37,6 +37,8 @@ import lxml
 from random import randint
 import winsound
 
+#________________________________________________________________________
+
 try:
         
     #Caputing start time of program
@@ -47,7 +49,7 @@ try:
     r_df = pdx.DataFrame()
     print(r_df) 
     
-    #Capture response data coming from URL
+    #Capture response data from URL
     #Default count of companies is 100 but this can be changed by just replacing the number in the end of the URL
     print('Getting data from URL...')
     r_url='https://finance.yahoo.com/most-active?offset=0&count=100'
@@ -55,7 +57,7 @@ try:
     #Specifying headers
     r_headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/601.3.9 (KHTML, like Gecko) Version/9.0.2 Safari/601.3.9'}
     
-    #Capturing response in variable
+    #Capturing response data in a variable
     r_response=requests.get(r_url,headers=r_headers)
     
     #Printing the response status
@@ -78,8 +80,9 @@ try:
     
     print('Starting loop')
     #Starting a loop so that each row of table data can be iterated. Each iteration will capture data for the new company
-    for item in soup.select('.simpTblRow'):
-        
+    #for item in soup.select('.simpTblRow'):
+    for index, item in enumerate(soup.select('.simpTblRow')):
+        print('Getting stock data for item number',index)   
         #Data will be captured in dictionary
         my_dict = {"SYMBOL" : item.select('[aria-label=Symbol]')[0].get_text(),
                   "NAME":item.select('[aria-label=Name]')[0].get_text(),
@@ -99,8 +102,27 @@ try:
     #Printing dataframe to see the captured or recorded data
     print(r_df)
         
-    server_api = ServerApi('1')
+    #Data manipulations
+    #Converting text representations of millions/billions into actual numbers    
+    
+    
+    #Created a custom function
+    def convertor_func(string):
 
+        #Specifying a dictionary that contains numerical representations
+        multiplier_numbers = {'K':1000, 'M':1000000, 'B':1000000000,'T':1000000000000}
+        
+        if string[-1].isdigit(): # check if no suffix
+            return int(string)
+        mx= multiplier_numbers[string[-1]] # look up suffix to get multiplier
+         # convert number to float, multiply by multiplier, then make int
+        return int(float(string[:-1]) * mx)
+    
+    for index,item in enumerate(r_df['AVERAGE VOLUME']):
+        r_df.loc[index,['AVERAGE VOLUME']] = convertor_func(item.replace(',',''))
+        
+    #Database loading
+    server_api = ServerApi('1')
     client = pymongo.MongoClient("mongodb+srv://"+quote_plus('Rishabh_connection')+":"+quote_plus('dJeFteltJwJ7q6pL')+"@cluster0.ov5lnlw.mongodb.net/?retryWrites=true&w=majority", server_api=ServerApi('1'))
     db = client.test
     print(db)
@@ -151,6 +173,8 @@ try:
     
     print('Time taken :',str(datetime.now()-s_time).split('.')[0])
     
+    #Deleting dataframe and response, clearing it from memory
+    del r_df,r_response
 except:
     print('Unknown error in program')
 
