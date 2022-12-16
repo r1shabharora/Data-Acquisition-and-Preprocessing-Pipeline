@@ -101,8 +101,9 @@ try:
     
     #Printing dataframe to see the captured or recorded data
     print(r_df)
-        
+            
     #Data manipulations
+    r_df["PRICE"] = pdx.to_numeric(r_df["PRICE"])
     #Converting text representations of millions/billions into actual numbers    
     
     
@@ -121,6 +122,22 @@ try:
     for index,item in enumerate(r_df['AVERAGE VOLUME']):
         r_df.loc[index,['AVERAGE VOLUME']] = convertor_func(item.replace(',',''))
         
+    
+    #Data analysis and description
+    r_df.describe
+    #Checking the first 10 rows of dataframe
+    r_df.head(10)
+    #Get basic info of dataset
+    r_df.info()
+    
+    #Get the company with lowest stock price
+    print('Company with lowest stock price is:',r_df.loc[r_df['PRICE'].idxmin(), 'NAME'],'having stock price being:',r_df['PRICE'].min())
+        
+    #Get the company with highest stock price
+    print('Company with highest stock price is:',r_df.loc[r_df['PRICE'].idxmax(), 'NAME'],'having stock price being:',r_df['PRICE'].max())
+  
+    #--- AT THIS STAGE - DATA HAS BEEN CLEANED/PREPARED AND NOW IT MUST BE LOADED INTO THE DATABASE
+    
     #Database loading
     server_api = ServerApi('1')
     client = pymongo.MongoClient("mongodb+srv://"+quote_plus('Rishabh_connection')+":"+quote_plus('dJeFteltJwJ7q6pL')+"@cluster0.ov5lnlw.mongodb.net/?retryWrites=true&w=majority", server_api=ServerApi('1'))
