@@ -176,7 +176,7 @@ try:
     print( r_df.shape[0],'Records have been saved in database')
     
     #Re-printing the count of documents that are part of the collection
-    print('Stock database consists of',collection.count_documents({}),'records')
+    print('Stock database consists of ',collection.count_documents({}),'records')
         
     #Notify user by playing 3 beep sounds
     freq = 5000
