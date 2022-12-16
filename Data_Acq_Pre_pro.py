@@ -5,7 +5,7 @@ Created on Wed Nov  9 22:55:12 2022
 @author: Rishabh Arora
 """
 #Installing pymongo package
-!pip install "pymongo[srv]"
+#!pip install "pymongo[srv]"
 
 #Importing necessary packages
 
@@ -13,16 +13,19 @@ Created on Wed Nov  9 22:55:12 2022
 import pandas as pdx
 import numpy as npx
 from datetime import datetime
+import time
 
 #Importing MongoDB packages
 import pymongo
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
 #Importing OS package
 import os
 
 #Importing below package to parse the content securely
 from urllib.parse import quote_plus
+import urllib    
 
 #Other main imports
 import requests
@@ -82,10 +85,12 @@ try:
                   "NAME":item.select('[aria-label=Name]')[0].get_text(),
                   "PRICE":item.select('[aria-label*=Price]')[0].get_text(),
                   "CHANGE":item.select('[aria-label=Change]')[0].get_text(),
-                  "CHANGE_P":item.select('[aria-label="% Change"]')[0].get_text(),
+                  "CHANGE in % ":item.select('[aria-label="% Change"]')[0].get_text(),
                   "M_CAP":item.select('[aria-label="Market Cap"]')[0].get_text(),
                   "AVERAGE VOLUME":item.select('[aria-label*="Avg Vol (3 month)"]')[0].get_text(),
-                  "PE_RATIO":item.select('[aria-label*="PE Ratio (TTM)"]')[0].get_text(),}
+                  "PE_RATIO":item.select('[aria-label*="PE Ratio (TTM)"]')[0].get_text(),
+                  "CAPTURED_DATE":datetime.today().strftime('%d-%m-%Y')
+                  }
         
         #Data that was captured in dictionary is now being appended to the dataframe
         r_df = r_df.append(my_dict,ignore_index=True)
@@ -94,15 +99,6 @@ try:
     #Printing dataframe to see the captured or recorded data
     print(r_df)
         
-    #Database loading part
-    username = quote_plus("Rishabh_connection")
-    password = "Rish@9090#"
-    host = "@cluster0.ov5lnlw.mongodb.net/?retryWrites=true&w=majority"
-    
-    import urllib    
-    from pymongo.server_api import ServerApi
-    uri = "mongodb+srv://%s:%s@%s"%(urllib.parse.quote_plus("Rishabh_connection"),urllib.parse.quote_plus("Rish@9090#"),host)
-    client = MongoClient(uri)
     server_api = ServerApi('1')
 
     client = pymongo.MongoClient("mongodb+srv://"+quote_plus('Rishabh_connection')+":"+quote_plus('dJeFteltJwJ7q6pL')+"@cluster0.ov5lnlw.mongodb.net/?retryWrites=true&w=majority", server_api=ServerApi('1'))
@@ -122,7 +118,8 @@ try:
     
     #Printing all collections
     print(collection)
-    collection.drop()
+    #Dropping all previous collections so that new data can be uploaded into database
+    #collection.drop()
 
     #Printing the count of documents that are part of the collection
     collection.count_documents({})
@@ -131,11 +128,16 @@ try:
     r_df.reset_index(inplace=True)
     data_dict = r_df.to_dict("records")
     collection.insert_many(data_dict)
-
-    #Re-printing the count of documents that are part of the collection
-    collection.count_documents({})
     
-    print(collection.count_documents({}),'Records have been saved in database')
+    #Adding some delay to ensure data load
+    time.sleep(5)
+
+    
+    #Notifying user about record updation
+    print( r_df.shape[0],'Records have been saved in database')
+    
+    #Re-printing the count of documents that are part of the collection
+    print('Stock database consists of',collection.count_documents({}),'records')
         
     #Notify user by playing 3 beep sounds
     freq = 5000
