@@ -1,7 +1,7 @@
 # Data-Acquisition-and-Preprocessing-Pipeline - Created by RISHABH ARORA
 Repository available at: https://github.com/r1shabharora/Data-Acquisition-and-Preprocessing-Pipeline
 
-In this code, Rishabh has created a datapipeline to fetch Stock quotes and other financial data from Yahoo Finance.
+In this code, Rishabh has created a data pipeline to fetch Stock quotes and other financial data from Yahoo Finance.
 Gathering data from one source, formatting/cleansing (as required) and then loading it into a database.
 
 STAGE-ONE (GETTING DATA)
@@ -22,7 +22,7 @@ All information is fetched in a dictionary and appropriate keys are predefined i
 Stock data can be utilized for analysis and stoage purpose to track changes from time to time.
 Data is stored in a database and MongoDB is used as the database provider.
 
-Raw data cannot be loaded directly into the database so cleansing is required. The stock price came as string which was converted to integer. Values in 'Average volume' was also converted using a custom function. This custom function transformed the values that were earlier denoted as '3M' and were convertedninto actual figures as '3000000'. This was done so that further analysis can be performed in future on this data.
+Raw data cannot be loaded directly into the database so cleansing is required. The stock price came as string which was converted to integer. Values in 'Average volume' was also converted using a custom function. This custom function transformed the values that were earlier denoted as '3M' and were converted into actual figures as '3000000'. This was done so that further analysis can be performed in future on this data.
 
 An additional feature 'CAPTURED DATE' was built in the dictionary because each time this program runs, it appends data into the database and by collecting data in time-series, this whole database will become more and more valuable. Example: time-series analysis can be performed, stock prediction can be performed using machine learning algorithms, etc.
 
